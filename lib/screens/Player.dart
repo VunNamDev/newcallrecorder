@@ -109,10 +109,21 @@ class _PlayerState extends State<Player> {
                       },
                     ),
                   ),
-                  Text(
-                    store.playItem.nuName,
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  )
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.only(
+                      left: 20,
+                      top: 10,
+                      bottom: 10,
+                    ),
+                    child: Text(
+                      store.playItem.nuName,
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
                 ],
               ),
               Image.asset(
@@ -206,11 +217,17 @@ class _PlayerState extends State<Player> {
                       ),
                       FlatButton(
                         child: Image.asset(
-                          "assets/images/star.png",
+                          store.arrFavorite.contains(store.playItem)
+                              ? "assets/images/star1.png"
+                              : "assets/images/star.png",
                           height: 27,
                           width: 27,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          setState(() {
+                            store.addarrFavorite(store.playItem);
+                          });
+                        },
                       )
                     ],
                   ),
@@ -220,13 +237,6 @@ class _PlayerState extends State<Player> {
                 child: Container(
                   // padding: EdgeInsets.only(top: 10),
                   color: Color(0Xfff0f3f5),
-                  child: Observer(
-                    builder: (_) => ListView.builder(
-                      itemCount: store.arrOutGoing.length,
-                      itemBuilder: (BuildContext ctxt, int index) =>
-                          getRow(context, store.arrOutGoing[index]),
-                    ),
-                  ),
                 ),
               )
             ],
@@ -283,7 +293,7 @@ Widget getRow(BuildContext context, FileItem item) {
                           width: 15,
                         ),
                         Text(
-                          new DateFormat('dd/MM/yyyy   hh:mm').format(
+                          new DateFormat('dd/MM/yyyy   HH:mm').format(
                               new DateTime.fromMillisecondsSinceEpoch(
                                   item.timeStamp)),
                           style:

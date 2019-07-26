@@ -7,10 +7,12 @@ import 'package:newcallrecorder/screens/Player.dart';
 import './screens/MainScreen.dart';
 import './screens/SplashScreen.dart';
 import './screens/PermissionScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  static SharedPreferences prefs;
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -18,7 +20,7 @@ class MyApp extends StatelessWidget {
 
     return new MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: "/MainScreen",
+      initialRoute: "/SplashScreen",
       routes: {
         '/': (context) => SplashScreen(),
         '/MainScreen': (context) => MainScreen(),

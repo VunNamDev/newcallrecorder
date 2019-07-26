@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:intl/intl.dart';
+import 'package:toast/toast.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +58,17 @@ class _MainScreenState extends State<MainScreen>
 
   void openDrawer(context) {
     _key.currentState.openDrawer();
+  }
+
+  void del(FileItem item) {
+    setState(() {
+      store.removeArrAll(item);
+      store.removeArrInComing(item);
+      store.removeArrOutGoing(item);
+      store.addarrFavorite(item);
+    });
+    _showToast(context);
+    Navigator.pop(context);
   }
 
   @override
@@ -166,46 +178,43 @@ class _MainScreenState extends State<MainScreen>
                   Expanded(
                     child: Container(
                       color: Color(0Xfff0f3f5),
-                      child: TabBarView(
-                        controller: tabController,
-                        children: [
-                          Container(
-                            child: Observer(
-                              builder: (_) => ListView.builder(
+                      child: Observer(
+                        builder: (_) => TabBarView(
+                          controller: tabController,
+                          children: [
+                            Container(
+                              child: ListView.builder(
                                 itemCount: store.arrAll.length,
                                 itemBuilder: (BuildContext ctxt, int index) =>
-                                    getRow(context, store.arrAll[index]),
+                                    getRow(context, store.arrAll[index], del),
                               ),
                             ),
-                          ),
-                          Container(
-                            child: Observer(
-                              builder: (_) => ListView.builder(
+                            Container(
+                              child: ListView.builder(
                                 itemCount: store.arrInComing.length,
                                 itemBuilder: (BuildContext ctxt, int index) =>
-                                    getRow(context, store.arrInComing[index]),
+                                    getRow(
+                                        context, store.arrInComing[index], del),
                               ),
                             ),
-                          ),
-                          Container(
-                            child: Observer(
-                              builder: (_) => ListView.builder(
+                            Container(
+                              child: ListView.builder(
                                 itemCount: store.arrOutGoing.length,
                                 itemBuilder: (BuildContext ctxt, int index) =>
-                                    getRow(context, store.arrOutGoing[index]),
+                                    getRow(
+                                        context, store.arrOutGoing[index], del),
                               ),
                             ),
-                          ),
-                          Container(
-                            child: Observer(
-                              builder: (_) => ListView.builder(
-                                itemCount: store.arrFavotite.length,
+                            Container(
+                              child: ListView.builder(
+                                itemCount: store.arrFavorite.length,
                                 itemBuilder: (BuildContext ctxt, int index) =>
-                                    getRow(context, store.arrFavotite[index]),
+                                    getRow(
+                                        context, store.arrFavorite[index], del),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   )
@@ -219,14 +228,14 @@ class _MainScreenState extends State<MainScreen>
   }
 }
 
-void _showAlert(BuildContext context) {
+void _showAlert(BuildContext context, FileItem item, Function del) {
   showDialog(
     context: context,
     builder: (context) => Stack(
       alignment: Alignment.center,
       children: <Widget>[
         Container(
-          height: 320,
+          height: 312,
           width: MediaQuery.of(context).size.width - 40,
           color: Colors.white,
           child: FlatButton(
@@ -266,7 +275,7 @@ void _showAlert(BuildContext context) {
                               Container(
                                 margin: EdgeInsets.only(top: 5, bottom: 5),
                                 child: Text(
-                                  "Can't get name",
+                                  item.nuName,
                                   maxLines: 1,
                                   style: TextStyle(
                                       fontSize: 16, color: Color(0xff2f353a)),
@@ -279,12 +288,17 @@ void _showAlert(BuildContext context) {
                                   Row(
                                     children: <Widget>[
                                       Image.asset(
-                                        "assets/images/up.png",
+                                        item.incoming
+                                            ? "assets/images/down.png"
+                                            : "assets/images/up.png",
                                         height: 15,
                                         width: 15,
                                       ),
                                       Text(
-                                        "3:14 pm",
+                                        new DateFormat('dd/MM/yyyy   HH:mm')
+                                            .format(new DateTime
+                                                    .fromMillisecondsSinceEpoch(
+                                                item.timeStamp)),
                                         style: TextStyle(
                                             fontSize: 13,
                                             color: Color(0xffa39e9e)),
@@ -294,7 +308,8 @@ void _showAlert(BuildContext context) {
                                   Container(
                                     margin: EdgeInsets.only(right: 10),
                                     child: Text(
-                                      "00:06",
+                                      _printDuration(
+                                          new Duration(seconds: item.timeCall)),
                                       style: TextStyle(
                                           fontSize: 13,
                                           color: Color(0xffa39e9e)),
@@ -312,19 +327,56 @@ void _showAlert(BuildContext context) {
                 FlatButton(
                   padding:
                       EdgeInsets.only(top: 0, bottom: 0, right: 10, left: 10),
-                  onPressed: () {},
+                  onPressed: () {
+                    store.addarrFavorite(item);
+
+                    _showToast(context);
+                    Navigator.pop(context);
+                  },
                   child: Row(
                     children: <Widget>[
-                      Image.asset(
-                        "assets/images/addStart.png",
-                        color: Colors.red,
-                        height: 60.0,
-                        width: 60.0,
+                      Container(
+                        height: 60,
+                        margin: EdgeInsets.only(right: 20, left: 10),
+                        child: Image.asset(
+                          "assets/images/addStart.png",
+                          color: Color(0xff63c2de),
+                          height: 30,
+                          width: 30,
+                        ),
                       ),
                       Text(
-                        "add to library",
+                        store.arrFavorite.contains(item)
+                            ? "Remove from library"
+                            : "Add to library",
                         style:
-                            TextStyle(color: Color(0xffa39e9e), fontSize: 15),
+                            TextStyle(color: Color(0xffa39e9e), fontSize: 16),
+                      )
+                    ],
+                  ),
+                ),
+                FlatButton(
+                  padding:
+                      EdgeInsets.only(top: 0, bottom: 0, right: 10, left: 10),
+                  onPressed: () {
+                    del(item);
+                  },
+                  child: Row(
+                    children: <Widget>[
+                      Container(
+                        height: 60,
+                        margin: EdgeInsets.only(right: 20, left: 10),
+                        child: Image.asset(
+                          "assets/images/delete.png",
+                          color: Color(0xff63c2de),
+                          height: 30,
+                          width: 30,
+                        ),
+                      ),
+                      Text(
+                        "Delete audio",
+                        style:
+                            TextStyle(color: Color(0xffa39e9e), fontSize: 16),
                       )
                     ],
                   ),
@@ -335,16 +387,20 @@ void _showAlert(BuildContext context) {
                   onPressed: () {},
                   child: Row(
                     children: <Widget>[
-                      Image.asset(
-                        "assets/images/addStart.png",
-                        color: Colors.red,
-                        height: 60.0,
-                        width: 60.0,
+                      Container(
+                        height: 60,
+                        margin: EdgeInsets.only(right: 20, left: 10),
+                        child: Image.asset(
+                          "assets/images/share.png",
+                          color: Color(0xff63c2de),
+                          height: 30,
+                          width: 30,
+                        ),
                       ),
                       Text(
-                        "add to library",
+                        "Share",
                         style:
-                            TextStyle(color: Color(0xffa39e9e), fontSize: 15),
+                            TextStyle(color: Color(0xffa39e9e), fontSize: 16),
                       )
                     ],
                   ),
@@ -354,37 +410,22 @@ void _showAlert(BuildContext context) {
                       EdgeInsets.only(top: 0, bottom: 0, right: 10, left: 10),
                   onPressed: () {},
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Image.asset(
-                        "assets/images/addStart.png",
-                        color: Colors.red,
-                        height: 60.0,
-                        width: 60.0,
+                      Container(
+                        height: 60,
+                        margin: EdgeInsets.only(right: 20, left: 10),
+                        child: Image.asset(
+                          "assets/images/info.png",
+                          color: Color(0xff63c2de),
+                          height: 30,
+                          width: 30,
+                        ),
                       ),
                       Text(
-                        "add to library",
+                        "Get infor",
                         style:
-                            TextStyle(color: Color(0xffa39e9e), fontSize: 15),
-                      )
-                    ],
-                  ),
-                ),
-                FlatButton(
-                  padding:
-                      EdgeInsets.only(top: 0, bottom: 0, right: 10, left: 10),
-                  onPressed: () {},
-                  child: Row(
-                    children: <Widget>[
-                      Image.asset(
-                        "assets/images/addStart.png",
-                        color: Colors.red,
-                        height: 60.0,
-                        width: 60.0,
-                      ),
-                      Text(
-                        "add to library",
-                        style:
-                            TextStyle(color: Color(0xffa39e9e), fontSize: 15),
+                            TextStyle(color: Color(0xffa39e9e), fontSize: 16),
                       )
                     ],
                   ),
@@ -398,14 +439,31 @@ void _showAlert(BuildContext context) {
   ); // Call the Dialog.
 }
 
-Widget getRow(BuildContext context, FileItem item) {
+bool sameItem(FileItem a, FileItem b) {
+  if (a.timeStamp == b.timeStamp &&
+      a.phoneNumber.compareTo(b.phoneNumber) == 0 &&
+      a.incoming.toString().compareTo(b.incoming.toString()) == 0 &&
+      a.timeCall == b.timeCall) {
+    return true;
+  }
+  return false;
+}
+
+void _showToast(BuildContext context) {
+  Toast.show("Success", context,
+      duration: Toast.LENGTH_SHORT,
+      gravity: Toast.BOTTOM,
+      backgroundColor: Color.fromRGBO(0, 0, 0, 0.3));
+}
+
+Widget getRow(BuildContext context, FileItem item, Function del) {
   return Container(
     height: 80,
     margin: EdgeInsets.all(2),
     child: FlatButton(
       textColor: Colors.transparent,
       onPressed: () {
-        store.playItem = item;
+        store.changePlayItem(item);
         Navigator.pushNamed(context, '/Player',
             arguments: <String, FileItem>{"item": item});
       },
@@ -450,7 +508,7 @@ Widget getRow(BuildContext context, FileItem item) {
                           width: 15,
                         ),
                         Text(
-                          new DateFormat('dd/MM/yyyy   hh:mm').format(
+                          new DateFormat('dd/MM/yyyy   HH:mm').format(
                               new DateTime.fromMillisecondsSinceEpoch(
                                   item.timeStamp)),
                           style:
@@ -469,10 +527,10 @@ Widget getRow(BuildContext context, FileItem item) {
           ),
           Container(
             height: 80,
-            width: 40,
+            width: 60,
             child: FlatButton(
               onPressed: () {
-                _showAlert(context);
+                _showAlert(context, item, del);
               },
               padding: EdgeInsets.all(0),
               child: Image.asset(

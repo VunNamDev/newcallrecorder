@@ -60,21 +60,21 @@ mixin _$AppStore on _AppStore, Store {
     }, _$arrOutGoingAtom, name: '${_$arrOutGoingAtom.name}_set');
   }
 
-  final _$arrFavotiteAtom = Atom(name: '_AppStore.arrFavotite');
+  final _$arrFavoriteAtom = Atom(name: '_AppStore.arrFavorite');
 
   @override
-  List<FileItem> get arrFavotite {
-    _$arrFavotiteAtom.context.enforceReadPolicy(_$arrFavotiteAtom);
-    _$arrFavotiteAtom.reportObserved();
-    return super.arrFavotite;
+  List<FileItem> get arrFavorite {
+    _$arrFavoriteAtom.context.enforceReadPolicy(_$arrFavoriteAtom);
+    _$arrFavoriteAtom.reportObserved();
+    return super.arrFavorite;
   }
 
   @override
-  set arrFavotite(List<FileItem> value) {
-    _$arrFavotiteAtom.context.conditionallyRunInAction(() {
-      super.arrFavotite = value;
-      _$arrFavotiteAtom.reportChanged();
-    }, _$arrFavotiteAtom, name: '${_$arrFavotiteAtom.name}_set');
+  set arrFavorite(List<FileItem> value) {
+    _$arrFavoriteAtom.context.conditionallyRunInAction(() {
+      super.arrFavorite = value;
+      _$arrFavoriteAtom.reportChanged();
+    }, _$arrFavoriteAtom, name: '${_$arrFavoriteAtom.name}_set');
   }
 
   final _$playItemAtom = Atom(name: '_AppStore.playItem');
@@ -95,6 +95,66 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   final _$_AppStoreActionController = ActionController(name: '_AppStore');
+
+  @override
+  void addArrAll(FileItem item) {
+    final _$actionInfo = _$_AppStoreActionController.startAction();
+    try {
+      return super.addArrAll(item);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addArrInComing(FileItem item) {
+    final _$actionInfo = _$_AppStoreActionController.startAction();
+    try {
+      return super.addArrInComing(item);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addArrOutGoing(FileItem item) {
+    final _$actionInfo = _$_AppStoreActionController.startAction();
+    try {
+      return super.addArrOutGoing(item);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void removeArrAll(FileItem item) {
+    final _$actionInfo = _$_AppStoreActionController.startAction();
+    try {
+      return super.removeArrAll(item);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void removeArrInComing(FileItem item) {
+    final _$actionInfo = _$_AppStoreActionController.startAction();
+    try {
+      return super.removeArrInComing(item);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void removeArrOutGoing(FileItem item) {
+    final _$actionInfo = _$_AppStoreActionController.startAction();
+    try {
+      return super.removeArrOutGoing(item);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void changeArrAll(List<FileItem> arrAll) {
@@ -127,10 +187,10 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
-  void changeArrFavotite(List<FileItem> arrFavotite) {
+  void changearrFavorite(List<FileItem> arrFavorite) {
     final _$actionInfo = _$_AppStoreActionController.startAction();
     try {
-      return super.changeArrFavotite(arrFavotite);
+      return super.changearrFavorite(arrFavorite);
     } finally {
       _$_AppStoreActionController.endAction(_$actionInfo);
     }
@@ -141,6 +201,16 @@ mixin _$AppStore on _AppStore, Store {
     final _$actionInfo = _$_AppStoreActionController.startAction();
     try {
       return super.changePlayItem(item);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addarrFavorite(FileItem item, {dynamic del = false}) {
+    final _$actionInfo = _$_AppStoreActionController.startAction();
+    try {
+      return super.addarrFavorite(item, del: del);
     } finally {
       _$_AppStoreActionController.endAction(_$actionInfo);
     }
