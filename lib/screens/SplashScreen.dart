@@ -30,27 +30,27 @@ class _SplashScreenState extends State<SplashScreen>
 
   void getData() async {
     List<FileItem> arr = [
-      // new FileItem(
-      //     phoneNumber: "0154756253",
-      //     nuName: "Van Bo",
-      //     incoming: true,
-      //     path: "https://luan.xyz/files/audio/nasa_on_a_mission.mp3",
-      //     timeCall: 60,
-      //     timeStamp: 1564061982),
-      // new FileItem(
-      //     phoneNumber: "01927462728",
-      //     nuName: "Van Nam",
-      //     incoming: true,
-      //     path: "https://luan.xyz/files/audio/nasa_on_a_mission.mp3",
-      //     timeCall: 100,
-      //     timeStamp: 1580061982),
-      // new FileItem(
-      //     phoneNumber: "0584562445",
-      //     nuName: "Vu Truong",
-      //     incoming: true,
-      //     path: "https://luan.xyz/files/audio/nasa_on_a_mission.mp3",
-      //     timeCall: 94,
-      //     timeStamp: 1564091982),
+      new FileItem(
+          phoneNumber: "0154756253",
+          nuName: "Van Bo",
+          incoming: true,
+          path: "https://luan.xyz/files/audio/nasa_on_a_mission.mp3",
+          timeCall: 60,
+          timeStamp: 1564061982),
+      new FileItem(
+          phoneNumber: "01927462728",
+          nuName: "Van Nam",
+          incoming: true,
+          path: "https://luan.xyz/files/audio/nasa_on_a_mission.mp3",
+          timeCall: 100,
+          timeStamp: 1580061982),
+      new FileItem(
+          phoneNumber: "0584562445",
+          nuName: "Vu Truong",
+          incoming: true,
+          path: "https://luan.xyz/files/audio/nasa_on_a_mission.mp3",
+          timeCall: 94,
+          timeStamp: 1564091982),
       new FileItem(
           phoneNumber: "0365489654",
           nuName: "Vu Phung",
@@ -71,7 +71,7 @@ class _SplashScreenState extends State<SplashScreen>
     arr.forEach((f) {
       arrStr.add(jsonEncode(f.toJson()));
     });
-    MyApp.prefs.setStringList("out", arrStr);
+    MyApp.prefs.setStringList("all", arrStr);
 
     List<FileItem> arrAll = new List<FileItem>();
     List<FileItem> arrIn = new List<FileItem>();
@@ -99,6 +99,7 @@ class _SplashScreenState extends State<SplashScreen>
       }
     }
 
+    // MyApp.prefs.remove("favorite");
     if (MyApp.prefs.getStringList("favorite") != null) {
       for (int i = 0; i < MyApp.prefs.getStringList("favorite").length; i++) {
         final f = MyApp.prefs.getStringList("favorite")[i];

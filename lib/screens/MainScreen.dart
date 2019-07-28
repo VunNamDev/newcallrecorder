@@ -20,7 +20,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen>
-    with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   GlobalKey<ScaffoldState> _key = new GlobalKey<ScaffoldState>();
   TabController tabController;
   static const platform = const MethodChannel('samples.flutter.dev');
@@ -60,12 +60,18 @@ class _MainScreenState extends State<MainScreen>
     _key.currentState.openDrawer();
   }
 
+  void removeFavorite(FileItem item) {
+    setState(() {
+      store.addarrFavorite(item);
+    });
+  }
+
   void del(FileItem item) {
     setState(() {
       store.removeArrAll(item);
       store.removeArrInComing(item);
       store.removeArrOutGoing(item);
-      store.addarrFavorite(item);
+      store.addarrFavorite(item, del: true);
     });
     _showToast(context);
     Navigator.pop(context);
@@ -186,31 +192,32 @@ class _MainScreenState extends State<MainScreen>
                               child: ListView.builder(
                                 itemCount: store.arrAll.length,
                                 itemBuilder: (BuildContext ctxt, int index) =>
-                                    getRow(context, store.arrAll[index], del),
+                                    getRow(context, store.arrAll[index], del,
+                                        removeFavorite),
                               ),
                             ),
                             Container(
                               child: ListView.builder(
                                 itemCount: store.arrInComing.length,
                                 itemBuilder: (BuildContext ctxt, int index) =>
-                                    getRow(
-                                        context, store.arrInComing[index], del),
+                                    getRow(context, store.arrInComing[index],
+                                        del, removeFavorite),
                               ),
                             ),
                             Container(
                               child: ListView.builder(
                                 itemCount: store.arrOutGoing.length,
                                 itemBuilder: (BuildContext ctxt, int index) =>
-                                    getRow(
-                                        context, store.arrOutGoing[index], del),
+                                    getRow(context, store.arrOutGoing[index],
+                                        del, removeFavorite),
                               ),
                             ),
                             Container(
                               child: ListView.builder(
                                 itemCount: store.arrFavorite.length,
                                 itemBuilder: (BuildContext ctxt, int index) =>
-                                    getRow(
-                                        context, store.arrFavorite[index], del),
+                                    getRow(context, store.arrFavorite[index],
+                                        del, removeFavorite),
                               ),
                             ),
                           ],
@@ -226,9 +233,14 @@ class _MainScreenState extends State<MainScreen>
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
-void _showAlert(BuildContext context, FileItem item, Function del) {
+void _showAlert(BuildContext context, FileItem item, Function del,
+    Function removeFavorite) {
   showDialog(
     context: context,
     builder: (context) => Stack(
@@ -328,8 +340,7 @@ void _showAlert(BuildContext context, FileItem item, Function del) {
                   padding:
                       EdgeInsets.only(top: 0, bottom: 0, right: 10, left: 10),
                   onPressed: () {
-                    store.addarrFavorite(item);
-
+                    removeFavorite(item);
                     _showToast(context);
                     Navigator.pop(context);
                   },
@@ -346,7 +357,7 @@ void _showAlert(BuildContext context, FileItem item, Function del) {
                         ),
                       ),
                       Text(
-                        store.arrFavorite.contains(item)
+                        _sameItem(store.arrFavorite, item) > -1
                             ? "Remove from library"
                             : "Add to library",
                         style:
@@ -456,7 +467,8 @@ void _showToast(BuildContext context) {
       backgroundColor: Color.fromRGBO(0, 0, 0, 0.3));
 }
 
-Widget getRow(BuildContext context, FileItem item, Function del) {
+Widget getRow(BuildContext context, FileItem item, Function del,
+    Function removeFavorite) {
   return Container(
     height: 80,
     margin: EdgeInsets.all(2),
@@ -530,7 +542,7 @@ Widget getRow(BuildContext context, FileItem item, Function del) {
             width: 60,
             child: FlatButton(
               onPressed: () {
-                _showAlert(context, item, del);
+                _showAlert(context, item, del, removeFavorite);
               },
               padding: EdgeInsets.all(0),
               child: Image.asset(
@@ -544,6 +556,24 @@ Widget getRow(BuildContext context, FileItem item, Function del) {
       ),
     ),
   );
+}
+
+int _sameItem(List<FileItem> list, FileItem b) {
+  print(list != null);
+  if (list != null) {
+    for (int i = 0; i < list.length; i++) {
+      print(i);
+      FileItem a = list[i];
+      if (a.nuName.compareTo(b.nuName) == 0 &&
+          a.timeStamp == b.timeStamp &&
+          a.phoneNumber.compareTo(b.phoneNumber) == 0 &&
+          a.incoming.toString().compareTo(b.incoming.toString()) == 0 &&
+          a.timeCall == b.timeCall) {
+        return i;
+      }
+    }
+  }
+  return -1;
 }
 
 String _printDuration(Duration duration) {

@@ -40,31 +40,36 @@ abstract class _AppStore with Store {
 
   @action
   void removeArrAll(FileItem item) {
-    if (sameItem(this.arrAll, item)) {
+    int idx = sameItem(this.arrAll, item);
+    print(idx.toString() + " abcd");
+
+    if (idx > -1) {
       print("remove all");
-      this.arrAll.remove(item);
+      this.arrAll.removeAt(idx);
       saveAll();
     }
   }
 
   @action
   void removeArrInComing(FileItem item) {
-    if (sameItem(this.arrInComing, item)) {
+    int idx = sameItem(this.arrInComing, item);
+    if (idx > -1) {
       print("remove in comming");
 
-      this.arrInComing.remove(item);
+      this.arrInComing.removeAt(idx);
       saveIn();
     }
   }
 
   @action
   void removeArrOutGoing(FileItem item) {
-    if (sameItem(this.arrOutGoing, item)) {
-      print("remove outgoing");
-
-      this.arrOutGoing.remove(item);
-      saveOut();
+    print(sameItem(this.arrOutGoing, item).toString());
+    int idx = sameItem(this.arrOutGoing, item);
+    if (idx > -1) {
+      this.arrOutGoing.removeAt(idx);
+      print("remove outgoing  " + arrOutGoing.length.toString());
     }
+    saveOut();
   }
 
   @action
@@ -98,10 +103,14 @@ abstract class _AppStore with Store {
     if (del) {
       this.arrFavorite.remove(item);
     } else {
-      if (!this.arrFavorite.contains(item)) {
-        this.arrFavorite.add(item);
-      } else {
+      int idx = sameItem(this.arrFavorite, item);
+      if (idx > -1) {
+        print("remove");
+
         this.arrFavorite.remove(item);
+      } else {
+        print("Add");
+        this.arrFavorite.add(item);
       }
     }
 
@@ -140,20 +149,21 @@ abstract class _AppStore with Store {
     MyApp.prefs.setStringList("favorite", arrStr);
   }
 
-  bool sameItem(List<FileItem> list, FileItem b) {
+  int sameItem(List<FileItem> list, FileItem b) {
     if (list != null) {
       for (int i = 0; i < list.length; i++) {
+        print(i);
         FileItem a = list[i];
-        if (a.timeStamp == b.timeStamp &&
+        if (a.nuName.compareTo(b.nuName) == 0 &&
+            a.timeStamp == b.timeStamp &&
             a.phoneNumber.compareTo(b.phoneNumber) == 0 &&
             a.incoming.toString().compareTo(b.incoming.toString()) == 0 &&
             a.timeCall == b.timeCall) {
-          return true;
+          return i;
         }
       }
     }
-
-    return false;
+    return -1;
   }
 }
 

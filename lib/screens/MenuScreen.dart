@@ -107,7 +107,39 @@ class _MenuScreenState extends State<MenuScreen>
           );
         });
   }
-
+void _showDialogFolder(context) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return WillPopScope(
+            onWillPop: () {},
+            child: new AlertDialog(
+              title: new Text(
+                'Your audio will save to',
+                style: TextStyle(color: Color(0xff26a0f5), fontSize: 22.0),
+              ),
+              content: new Container(
+                child: new Text(
+                  '/storage/emulated/0/MySpecialFile',
+                  style: TextStyle(color: Color(0xff2f353a), fontSize: 18.0),
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: new Text(
+                    'Ok',
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -129,15 +161,32 @@ class _MenuScreenState extends State<MenuScreen>
           children: <Widget>[
             Center(
               child: Container(
-                margin: EdgeInsets.only(bottom: 10),
-                child: Text(
-                  "More option",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 22),
-                ),
-              ),
+                  height: 130,
+                  margin: EdgeInsets.only(bottom: 10),
+                  child: Row(
+                    children: <Widget>[
+                      Container(
+                        child: Image.asset(
+                          "assets/images/call.png",
+                          height: 100,
+                          width: 100,
+                        ),
+                        margin: EdgeInsets.all(10),
+                      ),
+                      Text(
+                        "More option",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22),
+                      ),
+                    ],
+                  )),
+            ),
+            Container(
+              height: 1,
+              color: Colors.white,
+              margin: EdgeInsets.only(bottom: 10),
             ),
             ButtonOpacity(
               onPressed: () {},
@@ -152,17 +201,17 @@ class _MenuScreenState extends State<MenuScreen>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text(
-                          "Background style",
-                          style: TextStyle(
-                            color: Color(0xff2f353a),
-                            fontSize: 16.0,
-                          ),
-                        ),
-                        Image.network(
-                          "https://lh3.googleusercontent.com/9e8uYnzMOZcu99Ghv153iXRBPUH-w0vyvhCnIgcvyuF9_1mSyj8--9COGIfGN__5uLs=s180-rw",
+                        Image.asset(
+                          "assets/images/rate.png",
                           height: 30,
                           width: 30,
+                        ),
+                        Text(
+                          "Rate app",
+                          style: TextStyle(
+                            color: Color(0xff8f9ba6),
+                            fontSize: 16.0,
+                          ),
                         ),
                       ],
                     ),
@@ -196,17 +245,17 @@ class _MenuScreenState extends State<MenuScreen>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text(
-                          "Storage folder",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Image.network(
-                          "https://lh3.googleusercontent.com/9e8uYnzMOZcu99Ghv153iXRBPUH-w0vyvhCnIgcvyuF9_1mSyj8--9COGIfGN__5uLs=s180-rw",
+                        Image.asset(
+                          "assets/images/infor2.png",
                           height: 30,
                           width: 30,
+                        ),
+                        Text(
+                          "Policy",
+                          style: TextStyle(
+                            color: Color(0xff8f9ba6),
+                            fontSize: 16,
+                          ),
                         ),
                       ],
                     ),
@@ -227,7 +276,7 @@ class _MenuScreenState extends State<MenuScreen>
             ),
             ButtonOpacity(
               onPressed: () {
-                _showModalSheet();
+               _showDialogFolder(context);
               },
               onLongPress: () {},
               child: new Container(
@@ -240,59 +289,17 @@ class _MenuScreenState extends State<MenuScreen>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text(
-                          "Instruction",
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Image.network(
-                          "https://lh3.googleusercontent.com/9e8uYnzMOZcu99Ghv153iXRBPUH-w0vyvhCnIgcvyuF9_1mSyj8--9COGIfGN__5uLs=s180-rw",
+                        Image.asset(
+                          "assets/images/ic_storage.png",
                           height: 30,
                           width: 30,
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-                decoration: new BoxDecoration(boxShadow: [
-                  new BoxShadow(
-                    color: Color.fromRGBO(0, 0, 0, 0.2),
-                    blurRadius: 5.0, // has the effect of softening the shadow
-                    spreadRadius: 0.0, // has the effect of extending the shadow
-                    offset: Offset(
-                      -5.0, // horizontal, move right 10
-                      5.0, // vertical, move down 10
-                    ),
-                  ),
-                ]),
-              ),
-            ),
-            ButtonOpacity(
-              onPressed: () {},
-              onLongPress: () {},
-              child: new Container(
-                child: new Card(
-                  child: Container(
-                    color: Colors.transparent,
-                    height: 60,
-                    padding: EdgeInsets.only(left: 10, right: 10),
-                    margin: EdgeInsets.only(left: 10, right: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
                         Text(
-                          "Rate app",
+                          "Storage folder",
                           style: TextStyle(
-                            color: Colors.black,
+                            color: Color(0xff8f9ba6),
                             fontSize: 16,
                           ),
-                        ),
-                        Image.network(
-                          "https://lh3.googleusercontent.com/9e8uYnzMOZcu99Ghv153iXRBPUH-w0vyvhCnIgcvyuF9_1mSyj8--9COGIfGN__5uLs=s180-rw",
-                          height: 30,
-                          width: 30,
                         ),
                       ],
                     ),
@@ -316,4 +323,5 @@ class _MenuScreenState extends State<MenuScreen>
       ),
     );
   }
+  
 }
